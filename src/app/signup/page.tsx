@@ -1,69 +1,46 @@
 "use client";
 import Link from "next/link";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
-// import { axios } from "axios";
+import toast from "react-hot-toast";
+import axios  from "axios";
 
-const countryCodes = [
-  { name: "Afghanistan", code: "+93", flag: "🇦🇫" },
-  { name: "Albania", code: "+355", flag: "🇦🇱" },
-  { name: "Algeria", code: "+213", flag: "🇩🇿" },
-  { name: "Andorra", code: "+376", flag: "🇦🇩" },
-  { name: "Angola", code: "+244", flag: "🇦🇴" },
-  { name: "Argentina", code: "+54", flag: "🇦🇷" },
-  { name: "Armenia", code: "+374", flag: "🇦🇲" },
-  { name: "Australia", code: "+61", flag: "🇦🇺" },
-  { name: "Austria", code: "+43", flag: "🇦🇹" },
-  { name: "Bangladesh", code: "+880", flag: "🇧🇩" },
-  { name: "Belgium", code: "+32", flag: "🇧🇪" },
-  { name: "Brazil", code: "+55", flag: "🇧🇷" },
-  { name: "Canada", code: "+1", flag: "🇨🇦" },
-  { name: "China", code: "+86", flag: "🇨🇳" },
-  { name: "Denmark", code: "+45", flag: "🇩🇰" },
-  { name: "Egypt", code: "+20", flag: "🇪🇬" },
-  { name: "France", code: "+33", flag: "🇫🇷" },
-  { name: "Germany", code: "+49", flag: "🇩🇪" },
-  { name: "India", code: "+91", flag: "🇮🇳" },
-  { name: "Indonesia", code: "+62", flag: "🇮🇩" },
-  { name: "Italy", code: "+39", flag: "🇮🇹" },
-  { name: "Japan", code: "+81", flag: "🇯🇵" },
-  { name: "Mexico", code: "+52", flag: "🇲🇽" },
-  { name: "Nepal", code: "+977", flag: "🇳🇵" },
-  { name: "Netherlands", code: "+31", flag: "🇳🇱" },
-  { name: "New Zealand", code: "+64", flag: "🇳🇿" },
-  { name: "Nigeria", code: "+234", flag: "🇳🇬" },
-  { name: "Pakistan", code: "+92", flag: "🇵🇰" },
-  { name: "Russia", code: "+7", flag: "🇷🇺" },
-  { name: "Saudi Arabia", code: "+966", flag: "🇸🇦" },
-  { name: "Singapore", code: "+65", flag: "🇸🇬" },
-  { name: "South Africa", code: "+27", flag: "🇿🇦" },
-  { name: "South Korea", code: "+82", flag: "🇰🇷" },
-  { name: "Spain", code: "+34", flag: "🇪🇸" },
-  { name: "Sri Lanka", code: "+94", flag: "🇱🇰" },
-  { name: "Sweden", code: "+46", flag: "🇸🇪" },
-  { name: "Switzerland", code: "+41", flag: "🇨🇭" },
-  { name: "Thailand", code: "+66", flag: "🇹🇭" },
-  { name: "Turkey", code: "+90", flag: "🇹🇷" },
-  { name: "Ukraine", code: "+380", flag: "🇺🇦" },
-  { name: "United Arab Emirates", code: "+971", flag: "🇦🇪" },
-  { name: "United Kingdom", code: "+44", flag: "🇬🇧" },
-  { name: "United States", code: "+1", flag: "🇺🇸" },
-  { name: "Vietnam", code: "+84", flag: "🇻🇳" },
-  { name: "Zimbabwe", code: "+263", flag: "🇿🇼" },
-  // ... add more if needed
-];
 
 export default function Signup() {
+  const router = useRouter();
   const [user, setUser] = useState({
     email: "",
     password: "",
     username: "",
     phone: ""
   });
+  const [buttonDisabled, setButtonDisabled] = useState(false);
+  const [loading, setLoading] = useState(false)
 
-  const onSignup = async () => {};
+
+  const onSignup = async () => {
+    try {
+      setLoading(true);
+      const response = await axios.post("/api/users/signup", user);
+      console.log("Signup success", response.data);
+      toast.success("User registered successfully");
+      router.push("/login");
+    } catch (error: any) {
+      toast.error(error.message)
+    }finally{
+      setLoading(false);
+    }
+  };
+
+  useEffect(()=>{
+    if(user.email && user.password && user.phone && user.username){
+      setButtonDisabled(false)
+    }else{
+      setButtonDisabled(true)
+    }
+  },[user])
   return (
     <>
       <div className="flex flex-col md:flex-row bg-blue-950 min-h-screen items-center px-4 sm:px-8">
@@ -71,7 +48,7 @@ export default function Signup() {
         <div className="w-full sm:w-2/3 md:flex-1 text-center text-white mb-8 md:mb-0">
           <h1 className="text-[2.5rem] sm:text-[3rem] md:text-[3.5rem]">
             Welcome to{" "}
-            <strong className="text-red-600 font-bold">PGLife</strong>
+            <strong className="text-red-600 font-bold">PGverse</strong>
           </h1>
           <p className="text-[1.1rem] sm:text-[1.3rem] md:text-[1.4rem]">
             Find the Best PG's Near You!
@@ -85,7 +62,7 @@ export default function Signup() {
         {/* Right Section - Signup Form */}
         <div className="w-full h-auto text-black pt-2 border-2 border-blue-400 rounded-3xl bg-slate-200 mx-auto md:min-w-[400px] md:max-w-[500px]   md:h-[90vh] ">
           <h1 className="text-center text-[2rem] sm:text-[2.5rem] py-4 text-blue-500 font-bold">
-            Signup
+            {loading?"Processing": "Signup"}
           </h1>
 
           {/* Username */}
@@ -124,7 +101,7 @@ export default function Signup() {
               Phone no
             </label>
               <input
-                type="number"
+                type="text"
                 id="phone"
                 value={user.phone}
                 onChange={(e) => setUser({ ...user, phone: e.target.value })}
@@ -139,7 +116,7 @@ export default function Signup() {
               Password
             </label>
             <input
-              type="text"
+              type="password"
               id="password"
               value={user.password}
               onChange={(e) => setUser({ ...user, password: e.target.value })}
@@ -154,7 +131,7 @@ export default function Signup() {
               onClick={onSignup}
               className="w-full py-2 bg-blue-500 rounded-lg hover:bg-blue-600 cursor-pointer"
             >
-              Submit
+              {buttonDisabled? "Not Allowed":"Signup"}
             </button>
           </div>
 
@@ -164,8 +141,8 @@ export default function Signup() {
             <div className="size-10 p-2 bg-gray-300 rounded-full cursor-pointer hover:bg-gray-400"><img src="https://www.svgrepo.com/show/475689/twitter-color.svg" alt="" /></div>
           </div>
           <p className="pt-4 text-center text-gray-400 text-sm sm:text-base">
-            Already registered? <span className="text-red-600">Login</span>
-          </p>
+            Already registered?<Link href="/login" className="text-red-600"> Login</Link>
+          </p>         
           <p className="text-[12px] py-2 mb-8 text-center  text-gray-400 px-4 sm:text-[14px] sm:mb-4">
             By clicking the button, you are agreeing to our{" "}
             <span className="text-red-600">Terms and Services.</span>
