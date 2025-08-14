@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react";
 
-export default function forgotPassword() {
+export default function resetPassword() {
   const [password, setPassword] = useState({
     newPassword: "",
     confirmPassword: "",
@@ -30,6 +30,7 @@ export default function forgotPassword() {
               setPassword({ ...password, newPassword: e.target.value })
             }
             placeholder="new password"
+            autoComplete="off"
             className="w-full p-2 text-sm border text-gray-600 border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 sm:mb-0 sm:flex-1"
           />
         </div>
@@ -48,6 +49,7 @@ export default function forgotPassword() {
               setPassword({ ...password, confirmPassword: e.target.value })
             }
             placeholder="confirm password"
+            autoComplete="off"
             className="w-full p-2 border text-sm text-gray-600 border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 sm:mb-0 sm:flex-1"
           />
         </div>

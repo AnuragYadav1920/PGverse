@@ -5,46 +5,42 @@ import { useRouter } from "next/navigation";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
 import toast from "react-hot-toast";
-import axios  from "axios";
-
+import axios from "axios";
 
 export default function Signup() {
   const router = useRouter();
   const [user, setUser] = useState({
     email: "",
     password: "",
-    username: "",
-    phone: ""
   });
   const [buttonDisabled, setButtonDisabled] = useState(false);
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
 
-
-  const onSignup = async () => {
+  const onLogin = async () => {
     try {
       setLoading(true);
-      const response = await axios.post("/api/users/signup", user);
-      console.log("Signup success", response.data);
-      alert("User registered successfully");
-      toast.success("User registered successfully");
-      router.push("/login");
+      const response = await axios.post("/api/users/login", user);
+      console.log("login successfully", response.data);
+      alert("User logged in successfully");
+      toast.success("Logged in successfully");
+      router.push("/");
     } catch (error: any) {
-      toast.error(error.message)
-    }finally{
+      toast.error(error.message);
+    } finally {
       setLoading(false);
     }
   };
 
-  useEffect(()=>{
-    if(user.email && user.password && user.phone && user.username){
-      setButtonDisabled(false)
-    }else{
-      setButtonDisabled(true)
+  useEffect(() => {
+    if (!user.email || !user.password) {
+      setButtonDisabled(true);
+    } else {
+      setButtonDisabled(false);
     }
-  },[user])
+  }, [user]);
   return (
     <>
-      <div className="min-h-screen">
+    <div className="min-h-screen">
       <div className="flex">
         {/* Left Section - Welcome */}
         <div className="hidden min-h-screen bg-blue-950 flex-1/2 items-center text-center lg:grid ">
@@ -67,25 +63,9 @@ export default function Signup() {
         <div className="min-h-screen grid bg-gray-200 flex-1 items-center lg:flex-1/2 lg:grid">
           <div className="px-4 py-8 sm:w-2/3 sm:mx-auto lg:w-[500px] ">
             <h1 className="text-center text-[2rem] sm:text-[2.5rem] py-4 text-blue-500 font-bold">
-              {loading ? "Processing" : "Signup"}
+              {loading ? "Processing" : "Login"}
             </h1>
-            {/* username */}
-            <div className="">
-              <label
-                htmlFor="username"
-                className="w-full py-2 text-blue-500 inline-block sm:w-24"
-              >
-                Username
-              </label>
-              <input
-                type="text"
-                id="username"
-                value={user.username}
-                onChange={(e) => setUser({ ...user, username: e.target.value })}
-                placeholder="Create username"
-                className="w-full p-2 border text-gray-600 border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 sm:mb-0 sm:flex-1"
-              />
-            </div>
+
             {/* Email */}
             <div className="">
               <label
@@ -100,23 +80,7 @@ export default function Signup() {
                 value={user.email}
                 onChange={(e) => setUser({ ...user, email: e.target.value })}
                 placeholder="Enter email"
-                className="w-full p-2 border text-gray-600 border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 sm:mb-0 sm:flex-1"
-              />
-            </div>
-
-            <div className="">
-              <label
-                htmlFor="phone"
-                className="w-full py-2 text-blue-500 inline-block sm:w-24"
-              >
-                Phone
-              </label>
-              <input
-                type="text"
-                id="phone"
-                value={user.phone}
-                onChange={(e) => setUser({ ...user, phone: e.target.value })}
-                placeholder="Enter phone no"
+                autoComplete="off"
                 className="w-full p-2 border text-gray-600 border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 sm:mb-0 sm:flex-1"
               />
             </div>
@@ -135,17 +99,18 @@ export default function Signup() {
                 value={user.password}
                 onChange={(e) => setUser({ ...user, password: e.target.value })}
                 placeholder="Create password"
+                autoComplete="off"
                 className="w-full p-2 border text-gray-600 border-gray-300 rounded-lg mb-4 focus:outline-none focus:border-gray-600 sm:mb-0 sm:flex-1"
               />
             </div>
 
             {/* Submit Button */}
-            <div className="w-full text-center py-6 px-4 text-white">
+            <div className="w-full text-center py-6 text-white">
               <button
-                onClick={onSignup}
+                onClick={onLogin}
                 className="w-full py-2 bg-blue-500 rounded-lg hover:bg-blue-600 cursor-pointer"
               >
-                {buttonDisabled ? "Required Details" : "Signup"}
+                {buttonDisabled ? "Required Details" : "Login"}
               </button>
             </div>
 
@@ -170,10 +135,10 @@ export default function Signup() {
               </div>
             </div>
             <p className="pt-4 text-center text-gray-400 text-sm sm:text-base">
-              Already registered ?
-              <Link href="/login" className="text-red-600">
+              Not yet registered ?
+              <Link href="/auth/signup" className="text-red-600">
                 {" "}
-                Login
+                Signup
               </Link>
             </p>
             <p className="text-[12px] py-2 mb-8 text-center  text-gray-400 px-4 sm:text-[14px] sm:mb-4">

@@ -57,7 +57,7 @@ export default function verifyEmailPage() {
             </div>
           )};
           
-          {error && (
+          {(error || !token) && (
             <div className="text-center text-black border-[1px] border-slate-300 p-2 rounded-lg">
               <img
                 src="https://cdn3d.iconscout.com/3d/premium/thumb/wrong-label-3d-icon-download-in-png-blend-fbx-gltf-file-formats--reject-cancel-delete-remove-coupled-pack-sign-symbols-icons-6247467.png?f=webp"
